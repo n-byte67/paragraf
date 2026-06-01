@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paragraf - Bahasa Indonesia Kelas 8</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue: #1a5fa8;
+      --blue2: #2980d9;
+      --blue3: #56b4f5;
+      --light: #e8f4ff;
+      --lighter: #f0f7ff;
+      --white: #ffffff;
+      --text: #1a2744;
+      --soft: #5a7fa8;
+      --green: #27ae60;
+      --orange: #e67e22;
+      --yellow: #f9a825;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #0d1b2e;
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      background: linear-gradient(90deg, #0d1b2e, #1a3a5c);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+      z-index: 10;
+    }
+    .topbar-title {
+      color: white;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+    .topbar-title span { color: var(--blue3); }
+
+    /* PAGE INDICATOR */
+    .page-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .page-dots {
+      display: flex;
+      gap: 5px;
+    }
+    .pdot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .pdot.active { background: var(--blue3); transform: scale(1.4); }
+    .pdot.done { background: rgba(86,180,245,0.5); }
+    .page-num {
+      color: rgba(255,255,255,0.5);
+      font-size: 11px;
+      font-weight: 700;
+      margin-left: 6px;
+    }
+
+    /* MAIN STAGE */
+    .stage {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* PAGES */
+    .page {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      transform: translateX(60px);
+      overflow-y: auto;
+    }
+    .page.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateX(0);
+    }
+    .page.exit-left {
+      opacity: 0;
+      transform: translateX(-60px);
+    }
+
+    /* PAGE CARD */
+    .page-card {
+      background: white;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 680px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* PAGE HEADER */
+    .page-header {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--blue2) 100%);
+      padding: 20px 24px 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::after {
+      content: '';
+      position: absolute;
+      bottom: -20px; right: -20px;
+      width: 100px; height: 100px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+    }
+    .page-num-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .page-header h2 {
+      font-family: 'Nunito', sans-serif;
+      font-size: 22px;
+      font-weight: 900;
+      color: white;
+      line-height: 1.2;
+    }
+    .page-header p {
+      color: rgba(255,255,255,0.75);
+      font-size: 12px;
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+
+    /* PAGE BODY */
+    .page-body {
+      padding: 20px 24px;
+      max-height: calc(100vh - 200px);
+      overflow-y: auto;
+    }
+    .page-body::-webkit-scrollbar { width: 4px; }
+    .page-body::-webkit-scrollbar-thumb { background: #cce4ff; border-radius: 4px; }
+
+    /* DEFINISI CARD */
+    .def-card {
+      background: var(--lighter);
+      border-radius: 14px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--blue);
+      margin-bottom: 12px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .def-icon { font-size: 28px; flex-shrink: 0; }
+    .def-text { font-size: 13px; line-height: 1.8; color: var(--text); }
+    .def-text strong { color: var(--blue); }
+
+    /* UNSUR GRID */
+    .unsur-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .unsur-card {
+      background: var(--lighter);
+      border-radius: 12px;
+      padding: 14px;
+      border-top: 3px solid var(--blue2);
+      transition: transform 0.2s;
+    }
+    .unsur-card:hover { transform: translateY(-2px); }
+    .unsur-num { font-size: 22px; margin-bottom: 6px; }
+    .unsur-title { font-size: 12px; font-weight: 800; color: var(--blue); margin-bottom: 4px; }
+    .unsur-desc { font-size: 11px; color: var(--soft); line-height: 1.5; }
+
+    /* SYARAT */
+    .syarat-list { display: flex; flex-direction: column; gap: 10px; }
+    .syarat-card {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      background: var(--lighter);
+      border-radius: 12px;
+      padding: 14px 16px;
+      border-left: 4px solid var(--blue2);
+    }
+    .syarat-icon { font-size: 24px; flex-shrink: 0; }
+    .syarat-title { font-size: 13px; font-weight: 800; color: var(--blue); margin-bottom: 4px; }
+    .syarat-desc { font-size: 12px; color: var(--text); line-height: 1.6; }
+    .syarat-desc ul { padding-left: 16px; margin-top: 4px; }
+    .syarat-desc ul li { margin-bottom: 2px; }
+
+    /* TABS */
+    .tab-btns {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .tbtn {
+      padding: 7px 14px;
+      border: 2px solid var(--blue2);
+      border-radius: 20px;
+      background: white;
+      color: var(--blue2);
+      font-family: 'Nunito', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tbtn.on, .tbtn:hover { background: var(--blue); color: white; border-color: var(--blue); }
+    .tcontent { display: none; }
+    .tcontent.on { display: block; }
+
+    /* JENIS LIST */
+    .jenis-list { display: flex; flex-direction: column; gap: 8px; }
+    .jenis-card {
+      background: var(--lighter);
+      border-radius: 10px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--blue3);
+    }
+    .jenis-name { font-size: 12px; font-weight: 800; color: var(--blue); margin-bottom: 3px; }
+    .jenis-desc { font-size: 11px; color: var(--text); line-height: 1.5; }
+
+    /* TEKNIK */
+    .teknik-list { display: flex; flex-direction: column; gap: 8px; }
+    .teknik-card {
+      background: var(--lighter);
+      border-radius: 10px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--orange);
+    }
+    .teknik-name { font-size: 12px; font-weight: 800; color: #c0392b; margin-bottom: 3px; }
+    .teknik-desc { font-size: 11px; color: var(--text); line-height: 1.5; }
+
+    /* ANIMASI (same as before, compact) */
+    .anim-wrap { width: 100%; }
+    .anim-slide { display: none; animation: afadeIn 0.5s ease; }
+    .anim-slide.anim-active { display: block; }
+    @keyframes afadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    .anim-title { font-size: 16px; font-weight: 800; color: var(--blue); margin-bottom: 6px; }
+    .anim-sub { font-size: 12px; color: var(--soft); margin-bottom: 12px; line-height: 1.5; }
+    .anim-para { background: var(--lighter); border-radius: 10px; padding: 12px 14px; font-size: 12px; line-height: 2; color: var(--text); margin-bottom: 10px; }
+    .ak { display:inline; border-radius:4px; padding:1px 3px; transition:background 0.5s,color 0.5s; }
+    .ak.ahu { background:#ffd54f; color:#5d4037; font-weight:700; border-radius:5px; padding:2px 5px; }
+    .ak.ahp { background:#b3e5fc; color:#01579b; border-radius:5px; padding:2px 5px; }
+    .ak.ahs { background:#c8e6c9; color:#1b5e20; font-weight:700; border-radius:5px; padding:2px 5px; }
+    .anim-legend { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px; }
+    .anim-legitem { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--text); opacity:0; transform:translateY(5px); transition:opacity 0.4s,transform 0.4s; }
+    .anim-legitem.ashow { opacity:1; transform:translateY(0); }
+    .aleg-dot { width:12px; height:12px; border-radius:3px; }
+    .ald-u{background:#ffd54f;} .ald-p{background:#b3e5fc;} .ald-s{background:#c8e6c9;}
+    .anim-diagram { display:flex; flex-direction:column; gap:8px; margin-bottom:10px; }
+    .anim-drow { display:flex; align-items:center; gap:8px; opacity:0; transform:translateX(-12px); transition:opacity 0.4s,transform 0.4s; }
+    .anim-drow.ashow { opacity:1; transform:translateX(0); }
+    .anim-badge { font-size:10px; font-weight:800; padding:3px 10px; border-radius:16px; white-space:nowrap; min-width:70px; text-align:center; }
+    .abd-ded{background:#ffd54f;color:#5d4037;} .abd-ind{background:#c8e6c9;color:#1b5e20;} .abd-cam{background:#e1bee7;color:#4a148c;} .abd-ine{background:#ffe0b2;color:#bf360c;} .abd-men{background:#cfd8dc;color:#263238;}
+    .anim-arrow { font-size:14px; color:var(--soft); }
+    .anim-ddesc { font-size:11px; color:var(--text); line-height:1.4; }
+    .anim-tips { background:linear-gradient(135deg,#e8f4ff,#f0f7ff); border-left:3px solid var(--blue2); border-radius:8px; padding:10px 12px; font-size:11px; color:var(--text); line-height:1.6; opacity:0; transition:opacity 0.5s; margin-top:8px; }
+    .anim-tips.ashow { opacity:1; }
+    .anim-faderow { opacity:0; transition:opacity 0.5s; }
+    .ablk { height:20px; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; color:white; }
+    .ablk-u{background:#f9a825;} .ablk-p{background:#64b5f6;} .ablk-s{background:#66bb6a;}
+    .anim-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .anim-pdots { display:flex; gap:4px; }
+    .anim-pdot { width:7px; height:7px; border-radius:50%; background:#cce4ff; transition:all 0.3s; cursor:pointer; }
+    .anim-pdot.apdot-active { background:var(--blue); transform:scale(1.3); }
+    .anim-pdot.apdot-done { background:var(--blue2); }
+    .anim-stagename { font-size:10px; color:var(--soft); font-weight:700; flex:1; text-align:center; }
+    .abtn { background:var(--blue); color:white; border:none; padding:7px 14px; border-radius:16px; font-family:'Nunito',sans-serif; font-size:11px; font-weight:800; cursor:pointer; transition:all 0.2s; }
+    .abtn:hover { background:#1251a0; transform:translateY(-1px); }
+    .abtn:disabled { background:#cce4ff; color:#aaa; cursor:default; transform:none; }
+    .abtn-sec { background:white; color:var(--blue); border:2px solid var(--blue); }
+    .abtn-sec:hover { background:var(--lighter); }
+    .abtn-pause { background:var(--orange); }
+    .abtn-pause:hover { background:#d35400; }
+    .anim-bar-wrap { flex:1; height:4px; background:#e0eeff; border-radius:4px; overflow:hidden; }
+    .anim-bar { height:100%; background:var(--blue2); border-radius:4px; width:100%; transition:width linear; }
+
+    /* KUIS */
+    .kuis-list { display:flex; flex-direction:column; gap:10px; }
+    .kuis-card { background:var(--lighter); border-radius:12px; padding:14px 16px; }
+    .kuis-q { font-size:12px; font-weight:800; color:var(--text); margin-bottom:10px; line-height:1.5; }
+    .kuis-opts { display:flex; flex-direction:column; gap:6px; }
+    .kopt {
+      padding: 9px 12px;
+      border: 2px solid #cce4ff;
+      border-radius: 8px;
+      background: white;
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+    }
+    .kopt:hover { background:var(--light); border-color:var(--blue); }
+    .kfeedback { margin-top:6px; font-size:11px; font-weight:800; }
+    .skor-result {
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      color: white;
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 800;
+      margin-top: 12px;
+      display: none;
+    }
+    .btn-skor {
+      display: block;
+      margin: 12px auto 0;
+      background: var(--blue);
+      color: white;
+      border: none;
+      padding: 10px 28px;
+      border-radius: 20px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-skor:hover { background:#1251a0; transform:translateY(-1px); }
+
+    /* REFLEKSI */
+    .refl-wrap { display:flex; flex-direction:column; gap:14px; }
+    .refl-card {
+      background: var(--lighter);
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+      border-top: 4px solid var(--blue);
+    }
+    .refl-card img { width:130px; height:130px; border-radius:10px; margin-bottom:10px; }
+    .refl-label { font-size:14px; font-weight:800; color:var(--blue); margin-bottom:4px; }
+    .refl-sub { font-size:11px; color:var(--soft); margin-bottom:10px; }
+    .refl-btn {
+      display: inline-block;
+      background: var(--blue);
+      color: white;
+      padding: 9px 22px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 800;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .refl-btn:hover { background:#1251a0; transform:translateY(-1px); }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      background: linear-gradient(90deg, #0d1b2e, #1a3a5c);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+      gap: 12px;
+    }
+    .nav-btn {
+      background: rgba(255,255,255,0.08);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-btn:hover:not(:disabled) { background:rgba(255,255,255,0.15); transform:translateY(-1px); }
+    .nav-btn:disabled { opacity:0.3; cursor:default; transform:none; }
+    .nav-btn.primary { background:var(--blue2); border-color:var(--blue2); }
+    .nav-btn.primary:hover { background:#2471c4; }
+
+    .nav-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+    }
+    .nav-section-name {
+      color: rgba(255,255,255,0.6);
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .nav-progress {
+      width: 100%;
+      max-width: 200px;
+      height: 3px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .nav-progress-fill {
+      height: 100%;
+      background: var(--blue3);
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+
+    /* HERO PAGE special */
+    .hero-page {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--blue2) 60%, var(--blue3) 100%);
+      border-radius: 20px;
+      padding: 36px 28px;
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      max-width: 680px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .hero-page::before {
+      content: '📖';
+      position: absolute;
+      font-size: 140px;
+      opacity: 0.06;
+      top: -20px; left: -20px;
+    }
+    .hero-page::after {
+      content: '✏️';
+      position: absolute;
+      font-size: 100px;
+      opacity: 0.06;
+      bottom: -10px; right: -10px;
+    }
+    .hero-badge-top {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+    }
+    .hero-page h1 {
+      font-family: 'Nunito', sans-serif;
+      font-size: 42px;
+      font-weight: 900;
+      margin-bottom: 10px;
+      line-height: 1.1;
+    }
+    .hero-page p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.7;
+      margin-bottom: 24px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hero-start-btn {
+      background: white;
+      color: var(--blue);
+      border: none;
+      padding: 13px 32px;
+      border-radius: 30px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .hero-start-btn:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(0,0,0,0.25); }
+    .hero-chapters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .hero-ch {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.85);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 14px;
+    }
+
+    /* FINISH PAGE */
+    .finish-page {
+      background: white;
+      border-radius: 20px;
+      padding: 36px 28px;
+      text-align: center;
+      width: 100%;
+      max-width: 680px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .finish-emoji { font-size: 56px; margin-bottom: 14px; }
+    .finish-page h2 { font-size: 22px; font-weight: 900; color: var(--blue); margin-bottom: 8px; }
+    .finish-page p { font-size: 13px; color: var(--soft); margin-bottom: 20px; line-height: 1.6; }
+    .finish-checks { display:flex; flex-direction:column; gap:8px; text-align:left; max-width:360px; margin:0 auto; }
+    .fcheck { display:flex; gap:10px; align-items:center; background:var(--lighter); border-radius:10px; padding:10px 14px; font-size:12px; font-weight:700; color:var(--text); }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .topbar-title { font-size: 12px; }
+      .pdot { width: 6px; height: 6px; }
+      .page { padding: 10px; }
+      .page-header { padding: 14px 16px 12px; }
+      .page-header h2 { font-size: 18px; }
+      .page-body { padding: 14px 16px; max-height: calc(100vh - 180px); }
+      .hero-page h1 { font-size: 30px; }
+      .hero-page { padding: 28px 20px; }
+      .unsur-grid { grid-template-columns: 1fr; }
+      .nav-btn { padding: 9px 14px; font-size: 12px; }
+      .bottom-nav { padding: 10px 14px; }
+      .refl-wrap { flex-direction: column; }
+    }
+
+    @media (min-width: 601px) {
+      .refl-wrap { flex-direction: row; justify-content: center; }
+      .refl-card { flex: 0 0 200px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-title">📚 <span>Bahasa Indonesia</span> — Materi Paragraf</div>
+    <div class="page-indicator">
+      <div class="page-dots" id="pageDots"></div>
+      <div class="page-num" id="pageNum">1 / 9</div>
+    </div>
+  </div>
+
+  <!-- STAGE -->
+  <div class="stage" id="stage">
+
+    <!-- PAGE 0: HERO -->
+    <div class="page active" id="pg0">
+      <div class="hero-page">
+        <div class="hero-badge-top">Media Pembelajaran Interaktif</div>
+        <div style="font-size:52px;margin-bottom:8px">📘</div>
+        <h1>Paragraf</h1>
+        <p>Belajar memahami pengertian, struktur, syarat, jenis, dan teknik pengembangan paragraf secara interaktif!</p>
+        <button class="hero-start-btn" onclick="goTo(1)">Mulai Belajar 🚀</button>
+        <div class="hero-chapters">
+          <div class="hero-ch">📖 Pengertian</div>
+          <div class="hero-ch">🏗️ Unsur</div>
+          <div class="hero-ch">✅ Syarat</div>
+          <div class="hero-ch">📂 Jenis</div>
+          <div class="hero-ch">🛠️ Teknik</div>
+          <div class="hero-ch">🎬 Animasi</div>
+          <div class="hero-ch">🎯 Kuis</div>
+          <div class="hero-ch">📋 Refleksi</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 1: PENGERTIAN -->
+    <div class="page" id="pg1">
+      <div class="page-card">
+        <div class="page-header">
+          <div class="page-num-badge">Halaman 2 dari 9</div>
+          <h2>📖 Apa itu Paragraf?</h2>
+          <p>Definisi dan ciri-ciri paragraf menurut KBBI dan para ahli</p>
+        </div>
+        <div class="page-body">
+          <div class="def-card">
+            <div class="def-icon">💡</div>
+            <div class="def-text">
+              Menurut <strong>KBBI</strong>, paragraf adalah bagian bab dalam suatu karangan yang biasanya mengandung <strong>satu ide pokok</strong> dan penulisannya dimulai dengan garis baru (alinea).
+            </div>
+          </div>
+          <div class="def-card" style="border-left-color:#2980d9">
+            <div class="def-icon">📝</div>
+            <div class="def-text">
+              <strong>Satuan Bahasa Tulis:</strong> Terbentuk dari beberapa kalimat yang tersusun secara runtut dan sistematis. Sebuah paragraf idealnya minimal terdiri atas <strong>3 kalimat</strong>.
+            </div>
+          </div>
+          <div class="def-card" style="border-left-color:#27ae60">
+            <div class="def-icon">📌</div>
+            <div class="def-text">
+              <strong>Penanda fisik:</strong> Baris pertama menjorok <strong>5–6 ketukan</strong> dari margin kiri, atau dipisah dengan spasi kosong antar paragraf (sistem lurus).
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 2: UNSUR -->
+    <div class="page" id="pg2">
+      <div class="page-card">
+        <div class="page-header">
+          <div class="page-num-badge">Halaman 3 dari 9</div>
+          <h2>🏗️ Unsur-Unsur Paragraf</h2>
+          <p>Komponen pembentuk paragraf yang baik</p>
+        </div>
+        <div class="page-body">
+          <div class="unsur-grid">
+            <div class="unsur-card">
+              <div class="unsur-num">1️⃣</div>
+              <div class="unsur-title">Kalimat Topik / Utama</div>
+              <div class="unsur-desc">Kalimat yang memuat pikiran pokok sebagai pengendali seluruh isi paragraf.</div>
+            </div>
+            <div class="unsur-card">
+              <div class="unsur-num">2️⃣</div>
+              <div class="unsur-title">Kalimat Pengembang Langsung (KPL)</div>
+              <div class="unsur-desc">Kalimat penjelas yang secara langsung menerangkan atau mendukung kalimat topik.</div>
+            </div>
+            <div class="unsur-card">
+              <div class="unsur-num">3️⃣</div>
+              <div class="unsur-title">Kalimat Pengembang Tak Langsung (KPT)</div>
+              <div class="unsur-desc">Menerangkan KPL. Letaknya tidak boleh mendahului KPL secara hierarki.</div>
+            </div>
+            <div class="unsur-card">
+              <div class="unsur-num">4️⃣</div>
+              <div class="unsur-title">Kalimat Penegas & Transisi</div>
+              <div class="unsur-desc">Memperkuat gagasan utama atau menjembatani hubungan antarparagraf.</div>
+            </div>
+          </div>
+          <div style="background:#fff8e1;border-radius:10px;padding:10px 14px;margin-top:12px;font-size:11px;color:#5d4037;line-height:1.6;">
+            ⚠️ <strong>Catatan:</strong> Paragraf deskriptif dan naratif tidak memiliki kalimat utama secara eksplisit — pikiran pokoknya tersirat di keseluruhan kalimat.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 3: SYARAT -->
+    <div class="page" id="pg3">
+      <div class="page-card">
+        <div class="page-header">
+          <div class="page-num-badge">Halaman 4 dari 9</div>
+          <h2>✅ Syarat Paragraf yang Baik</h2>
+          <p>Tiga syarat utama yang harus dipenuhi</p>
+        </div>
+        <div class="page-body">
+          <div class="syarat-list">
+            <div class="syarat-card">
+              <div class="syarat-icon">🎯</div>
+              <div>
+                <div class="syarat-title">Kesatuan (Kohesi)</div>
+                <div class="syarat-desc">Hanya terdapat <strong>satu pikiran pokok</strong>. Semua kalimat penjelas harus mendukung ide utama dan tidak boleh menyimpang. Jika ada kalimat yang tidak berkaitan, paragraf kehilangan fokus.</div>
+              </div>
+            </div>
+            <div class="syarat-card" style="border-left-color:#27ae60">
+              <div class="syarat-icon">🔗</div>
+              <div>
+                <div class="syarat-title">Keselarasan (Koherensi)</div>
+                <div class="syarat-desc">Hubungan yang <strong>runtut dan padu</strong> antarkalimat. Dibentuk melalui:
+                  <ul><li>Kata penghubung (konjungsi)</li><li>Pengulangan kata penting</li><li>Kata ganti & urutan isi teratur</li></ul>
+                </div>
+              </div>
+            </div>
+            <div class="syarat-card" style="border-left-color:#e67e22">
+              <div class="syarat-icon">📋</div>
+              <div>
+                <div class="syarat-title">Kelengkapan (Pengembangan)</div>
+                <div class="syarat-desc">Ide pokok dikembangkan dengan <strong>kalimat penjelas yang cukup</strong> berupa rincian, contoh, atau penjelasan. Tanpa pengembangan, paragraf terasa singkat dan kurang informatif.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 4: JENIS -->
+    <div class="page" id="pg4">
+      <div class="page-card">
+        <div class="page-header">
+          <div class="page-num-badge">Halaman 5 dari 9</div>
+          <h2>📂 Jenis-Jenis Paragraf</h2>
+          <p>Berdasarkan letak gagasan utama dan gaya ekspresi</p>
+        </div>
+        <div class="page-body">
+          <div class="tab-btns">
+            <button class="tbtn on" onclick="switchTab(this,'jenis-penalaran')">📌 Letak Gagasan Utama</button>
+            <button class="tbtn" onclick="switchTab(this,'jenis-ekspresi')">🖊️ Gaya Ekspresi</button>
+          </div>
+          <div class="tcontent on" id="jenis-penalaran">
+            <div class="jenis-list">
+              <div class="jenis-card"><div class="jenis-name">1. Paragraf Deduktif</div><div class="jenis-desc">Gagasan utama di <strong>awal paragraf</strong>, diikuti kalimat-kalimat penjelas.</div></div>
+              <div class="jenis-card"><div class="jenis-name">2. Paragraf Induktif</div><div class="jenis-desc">Diawali rincian khusus, diakhiri simpulan umum. Konjungsi: <em>jadi, dengan demikian, oleh karena itu</em>.</div></div>
+              <div class="jenis-card"><div class="jenis-name">3. Paragraf Campuran (Deduktif-Induktif)</div><div class="jenis-desc">Gagasan utama di <strong>awal dan ditegaskan kembali di akhir</strong> paragraf.</div></div>
+              <div class="jenis-card"><div class="jenis-name">4. Paragraf Ineratif</div><div class="jenis-desc">Kalimat utama di <strong>tengah paragraf</strong>, diapit kalimat penjelas di awal dan akhir.</div></div>
+              <div class="jenis-card"><div class="jenis-name">5. Paragraf Menyebar / Tersirat</div><div class="jenis-desc">Gagasan utama <strong>tersirat di keseluruhan kalimat</strong>. Umumnya narasi atau deskripsi.</div></div>
+            </div>
+          </div>
+          <div class="tcontent" id="jenis-ekspresi">
+            <div class="jenis-list">
+              <div class="jenis-card"><div class="jenis-name">1. Narasi</div><div class="jenis-desc">Menceritakan peristiwa secara <strong>kronologis</strong>.</div></div>
+              <div class="jenis-card"><div class="jenis-name">2. Deskripsi</div><div class="jenis-desc">Menggambarkan objek sehingga pembaca <strong>seolah merasakan langsung</strong>.</div></div>
+              <div class="jenis-card"><div class="jenis-name">3. Eksposisi</div><div class="jenis-desc">Menyampaikan informasi secara <strong>objektif</strong> tanpa memengaruhi.</div></div>
+              <div class="jenis-card"><div class="jenis-name">4. Argumentasi</div><div class="jenis-desc"><strong>Meyakinkan atau membuktikan</strong> kebenaran pendapat dengan fakta dan bukti.</div></div>
+              <div class="jenis-card"><div class="jenis-name">5. Persuasi</div><div class="jenis-desc"><strong>Membujuk atau mengajak</strong> pembaca mengikuti kehendak penulis.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 5: TEKNIK -->
+    <div class="page" id="pg5">
+      <div class="page-card">
+        <div class="page-header">
+          <div class="page-num-badge">Halaman 6 dari 9</div>
+          <h2>🛠️ Teknik Pengembangan Paragraf</h2>
+          <p>Cara mengembangkan paragraf berdasarkan teknik dan isi</p>
+        </div>
+        <div class="page-body">
+          <div class="tab-btns">
+            <button class="tbtn on" onclick="switchTab(this,'teknik-cara')">📐 Berdasarkan Teknik</button>
+            <button class="tbtn" onclick="switchTab(this,'teknik-isi')">📄 Berdasarkan Isi</button>
+          </div>
+          <div class="tcontent on" id="teknik-cara">
+            <div class="teknik-list">
+              <div class="teknik-card"><div class="teknik-name">1. Cara Alamiah</div><div class="teknik-desc">• <strong>Urutan ruang (spasial)</strong> → menjelaskan tempat/posisi berurutan<br>• <strong>Urutan waktu (kronologis)</strong> → menjelaskan berdasarkan waktu kejadian</div></div>
+              <div class="teknik-card"><div class="teknik-name">2. Klimaks dan Antiklimaks</div><div class="teknik-desc">• <strong>Klimaks:</strong> dari sederhana → paling penting/kompleks<br>• <strong>Antiklimaks:</strong> dari paling penting → kurang penting</div></div>
+              <div class="teknik-card"><div class="teknik-name">3. Umum-Khusus dan Khusus-Umum</div><div class="teknik-desc">• <strong>Umum-khusus (deduktif):</strong> gagasan umum → rincian khusus<br>• <strong>Khusus-umum (induktif):</strong> fakta khusus → simpulan umum</div></div>
+            </div>
+          </div>
+          <div class="tcontent" id="teknik-isi">
+            <div class="teknik-list">
+              <div class="teknik-card"><div class="teknik-name">1. Perbandingan & Pertentangan</div><div class="teknik-desc">Membandingkan dua hal yang memiliki persamaan dan perbedaan.</div></div>
+              <div class="teknik-card"><div class="teknik-name">2. Analogi</div><div class="teknik-desc">Menjelaskan sesuatu dengan membandingkan hal lain yang lebih mudah dipahami.</div></div>
+              <div class="teknik-card"><div class="teknik-name">3. Contoh-contoh</div><div class="teknik-desc">Memberikan contoh sebagai penjelas ide pokok.</div></div>
+              <div class="teknik-card"><div class="teknik-name">4. Sebab-Akibat</div><div class="teknik-desc">Menjelaskan hubungan sebab dan akibat suatu peristiwa.</div></div>
+              <div class="teknik-card"><div class="teknik-name">5. Definisi Luas</div><div class="teknik-desc">Memberikan definisi suatu konsep lalu dijelaskan lebih rinci.</div></div>
+              <div class="teknik-card"><div class="teknik-name">6. Klasifikasi</div><div class="teknik-desc">Mengelompokkan suatu hal ke dalam beberapa bagian atau jenis.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 6: ANIMASI -->
+    <div class="page" id="pg6">
+      <div class="page-card">
+        <div class="page-header">
+          <div class="page-num-badge">Halaman 7 dari 9</div>
+          <h2>🎬 Animasi Pembelajaran</h2>
+          <p>Cara menentukan jenis paragraf & menemukan kalimat utama</p>
+        </div>
+        <div class="page-body">
+          <div class="anim-wrap">
+            <div style="font-size:10px;font-weight:800;color:var(--soft);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;text-align:center;" id="anim-stageLabel">Pendahuluan</div>
+            <div class="anim-pdots" id="anim-progressWrap" style="justify-content:center;margin-bottom:10px;display:flex;gap:5px;"></div>
+
+            <!-- slides -->
+            <div class="anim-slide anim-active" id="aslide0">
+              <div class="anim-title">Yuk, Kenali Paragrafmu!</div>
+              <div class="anim-sub">Animasi ini membantu memahami cara menentukan <strong>jenis paragraf</strong> dan menemukan <strong>kalimat utama</strong>!</div>
+              <div class="anim-diagram">
+                <div class="anim-drow" id="ail0"><div class="anim-badge abd-ded">🎯 Bagian 1</div><div class="anim-arrow">→</div><div class="anim-ddesc">Jenis-jenis paragraf berdasarkan letak gagasan utama</div></div>
+                <div class="anim-drow" id="ail1"><div class="anim-badge abd-ind">🔍 Bagian 2</div><div class="anim-arrow">→</div><div class="anim-ddesc">Cara menemukan kalimat utama</div></div>
+                <div class="anim-drow" id="ail2"><div class="anim-badge abd-cam">💡 Bagian 3</div><div class="anim-arrow">→</div><div class="anim-ddesc">Contoh nyata — kita coba bersama!</div></div>
+              </div>
+              <div class="anim-tips" id="atips0">⏱ <strong>Otomatis berjalan.</strong> Bisa pause atau skip pakai tombol di bawah!</div>
+            </div>
+            <div class="anim-slide" id="aslide1">
+              <div class="anim-title">1️⃣ Paragraf Deduktif</div>
+              <div class="anim-sub">Gagasan utama di <strong>kalimat pertama</strong>. Kalimat berikutnya menjelaskan.</div>
+              <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px;">
+                <div style="display:flex;gap:5px;"><div class="ablk ablk-u" style="flex:1">💡 Kalimat Utama</div></div>
+                <div style="display:flex;gap:5px;" id="adr1" class="anim-faderow"><div class="ablk ablk-p" style="flex:1">Penjelas 1</div><div class="ablk ablk-p" style="flex:1">Penjelas 2</div></div>
+                <div style="display:flex;gap:5px;" id="adr2" class="anim-faderow"><div class="ablk ablk-p" style="flex:1">Penjelas 3</div><div class="ablk ablk-p" style="flex:1">Penjelas 4</div></div>
+              </div>
+              <div class="anim-para"><span class="ak" id="ad0">Buah apel sangat baik untuk kesehatan tubuh.</span><span class="ak" id="ad1"> Apel mengandung serat tinggi yang melancarkan pencernaan.</span><span class="ak" id="ad2"> Vitamin C di dalamnya memperkuat imun tubuh.</span><span class="ak" id="ad3"> Selain itu, apel rendah kalori sehingga cocok untuk diet.</span></div>
+              <div class="anim-legend"><div class="anim-legitem" id="aldl1"><div class="aleg-dot ald-u"></div>Kalimat Utama</div><div class="anim-legitem" id="aldl2"><div class="aleg-dot ald-p"></div>Kalimat Penjelas</div></div>
+              <div class="anim-tips" id="atips1">💡 <strong>Cara cepat:</strong> Kalimat pertama bersifat umum → kalimat berikutnya makin spesifik → <strong>Deduktif!</strong></div>
+            </div>
+            <div class="anim-slide" id="aslide2">
+              <div class="anim-title">2️⃣ Paragraf Induktif</div>
+              <div class="anim-sub">Kalimat penjelas dulu, baru <strong>simpulan/kalimat utama di akhir</strong>.</div>
+              <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px;">
+                <div style="display:flex;gap:5px;"><div class="ablk ablk-p" style="flex:1">Penjelas 1</div><div class="ablk ablk-p" style="flex:1">Penjelas 2</div></div>
+                <div style="display:flex;gap:5px;" id="air1" class="anim-faderow"><div class="ablk ablk-p" style="flex:1">Penjelas 3</div><div class="ablk ablk-p" style="flex:1">Penjelas 4</div></div>
+                <div style="display:flex;gap:5px;" id="air2" class="anim-faderow"><div class="ablk ablk-s" style="flex:1">✅ Simpulan / Kalimat Utama</div></div>
+              </div>
+              <div class="anim-para"><span class="ak" id="ai0">Setiap hari Adit selalu bangun pagi dan berolahraga.</span><span class="ak" id="ai1"> Ia juga makan sayur dan buah secara rutin.</span><span class="ak" id="ai2"> Tidurnya teratur, delapan jam setiap malam.</span><span class="ak" id="ai3"> Dengan demikian, Adit adalah contoh remaja yang hidup sehat.</span></div>
+              <div class="anim-legend"><div class="anim-legitem" id="alil1"><div class="aleg-dot ald-p"></div>Kalimat Penjelas</div><div class="anim-legitem" id="alil2"><div class="aleg-dot ald-s"></div>Simpulan / Kalimat Utama</div></div>
+              <div class="anim-tips" id="atips2">💡 Cari <strong>"jadi", "dengan demikian", "oleh karena itu"</strong> di akhir → itu kalimat utamanya!</div>
+            </div>
+            <div class="anim-slide" id="aslide3">
+              <div class="anim-title">3️⃣ Campuran & Lainnya</div>
+              <div class="anim-sub">Campuran: gagasan utama di <strong>awal dan ditegaskan lagi di akhir</strong>.</div>
+              <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px;">
+                <div style="display:flex;gap:5px;"><div class="ablk ablk-u" style="flex:1">💡 Kalimat Utama (Awal)</div></div>
+                <div style="display:flex;gap:5px;" id="acr1" class="anim-faderow"><div class="ablk ablk-p" style="flex:1">Penjelas 1</div><div class="ablk ablk-p" style="flex:1">Penjelas 2</div></div>
+                <div style="display:flex;gap:5px;" id="acr2" class="anim-faderow"><div class="ablk ablk-s" style="flex:1">✅ Penegasan Kembali (Akhir)</div></div>
+              </div>
+              <div class="anim-para"><span class="ak" id="ac0">Membaca buku memberikan banyak manfaat bagi pelajar.</span><span class="ak" id="ac1"> Dengan membaca, kosakata bertambah dan berpikir kritis meningkat.</span><span class="ak" id="ac2"> Selain itu, membaca melatih konsentrasi.</span><span class="ak" id="ac3"> Oleh karena itu, membaca buku sangat bermanfaat.</span></div>
+              <div class="anim-tips" id="atips3">💡 Kalimat pertama & terakhir maknanya <strong>mirip/saling memperkuat</strong> → Campuran!</div>
+            </div>
+            <div class="anim-slide" id="aslide4">
+              <div class="anim-title">🔍 Cara Menemukan Kalimat Utama</div>
+              <div class="anim-sub">Ikuti 4 langkah ini!</div>
+              <div class="anim-diagram">
+                <div class="anim-drow" id="a5r0"><div class="anim-badge" style="background:#e3f2fd;color:#0d47a1;font-size:14px;min-width:26px">1</div><div class="anim-ddesc"><strong>Baca</strong> paragraf sekali dari awal sampai akhir.</div></div>
+                <div class="anim-drow" id="a5r1"><div class="anim-badge" style="background:#e8f5e9;color:#1b5e20;font-size:14px;min-width:26px">2</div><div class="anim-ddesc"><strong>Cari kalimat paling umum/luas</strong> — tidak ada kata "selain itu", "juga", "bahkan".</div></div>
+                <div class="anim-drow" id="a5r2"><div class="anim-badge" style="background:#fff3e0;color:#bf360c;font-size:14px;min-width:26px">3</div><div class="anim-ddesc"><strong>Cek posisi:</strong> awal (deduktif), akhir (induktif), keduanya (campuran), tengah (ineratif).</div></div>
+                <div class="anim-drow" id="a5r3"><div class="anim-badge" style="background:#f3e5f5;color:#4a148c;font-size:14px;min-width:26px">4</div><div class="anim-ddesc"><strong>Tidak ada?</strong> → paragraf <strong>Menyebar!</strong></div></div>
+              </div>
+              <div class="anim-tips" id="atips5">🔑 Kalimat utama bisa berdiri sendiri dan tetap bermakna. Kalimat penjelas butuh konteks kalimat lain.</div>
+            </div>
+            <div class="anim-slide" id="aslide5">
+              <div class="anim-title">✏️ Contoh Bersama!</div>
+              <div class="anim-sub">Tentukan jenis dan kalimat utama paragraf ini!</div>
+              <div class="anim-para"><span class="ak" id="alat0">Sungai Ciliwung mengalami pencemaran yang cukup parah.</span><span class="ak" id="alat1"> Banyak warga membuang sampah langsung ke sungai.</span><span class="ak" id="alat2"> Limbah pabrik juga turut mencemari airnya.</span><span class="ak" id="alat3"> Akibatnya, air sungai berwarna keruh dan berbau tidak sedap.</span></div>
+              <div class="anim-legend"><div class="anim-legitem" id="alll1"><div class="aleg-dot ald-u"></div>Kalimat Utama</div><div class="anim-legitem" id="alll2"><div class="aleg-dot ald-p"></div>Kalimat Penjelas</div></div>
+              <div class="anim-tips" id="atips6">📌 Kalimat 1 = kalimat utama (paling umum). Kalimat 2,3,4 = penjelas. → <strong>Paragraf Deduktif!</strong> ✅</div>
+            </div>
+
+            <!-- anim controls -->
+            <div class="anim-controls">
+              <button class="abtn abtn-sec" id="anim-prevBtn" onclick="animPrev()" disabled>←</button>
+              <button class="abtn abtn-pause" id="anim-pauseBtn" onclick="animTogglePause()">⏸</button>
+              <div class="anim-bar-wrap"><div class="anim-bar" id="anim-timerBar"></div></div>
+              <button class="abtn" id="anim-nextBtn" onclick="animNext()">→</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 7: KUIS -->
+    <div class="page" id="pg7">
+      <div class="page-card">
+        <div class="page-header">
+          <div class="page-num-badge">Halaman 8 dari 9</div>
+          <h2>🎯 Kuis Interaktif</h2>
+          <p>Uji pemahamanmu tentang paragraf!</p>
+        </div>
+        <div class="page-body">
+          <div class="kuis-list">
+            <div class="kuis-card">
+              <div class="kuis-q">1. Menurut KBBI, paragraf biasanya mengandung berapa ide pokok?</div>
+              <div class="kuis-opts">
+                <button class="kopt" onclick="jawab(this,'1',false)">A. Dua ide pokok</button>
+                <button class="kopt" onclick="jawab(this,'1',true)">B. Satu ide pokok</button>
+                <button class="kopt" onclick="jawab(this,'1',false)">C. Tiga ide pokok</button>
+              </div>
+              <div class="kfeedback" id="fb1"></div>
+            </div>
+            <div class="kuis-card">
+              <div class="kuis-q">2. Kalimat yang memuat pikiran pokok sebagai pengendali seluruh isi paragraf disebut...</div>
+              <div class="kuis-opts">
+                <button class="kopt" onclick="jawab(this,'2',false)">A. Kalimat Pengembang Langsung</button>
+                <button class="kopt" onclick="jawab(this,'2',true)">B. Kalimat Topik / Utama</button>
+                <button class="kopt" onclick="jawab(this,'2',false)">C. Kalimat Penegas</button>
+              </div>
+              <div class="kfeedback" id="fb2"></div>
+            </div>
+            <div class="kuis-card">
+              <div class="kuis-q">3. Paragraf yang gagasan utamanya terletak di awal disebut...</div>
+              <div class="kuis-opts">
+                <button class="kopt" onclick="jawab(this,'3',false)">A. Induktif</button>
+                <button class="kopt" onclick="jawab(this,'3',false)">B. Ineratif</button>
+                <button class="kopt" onclick="jawab(this,'3',true)">C. Deduktif</button>
+              </div>
+              <div class="kfeedback" id="fb3"></div>
+            </div>
+            <div class="kuis-card">
+              <div class="kuis-q">4. Teknik pengembangan yang menjelaskan hubungan sebab dan akibat disebut...</div>
+              <div class="kuis-opts">
+                <button class="kopt" onclick="jawab(this,'4',false)">A. Analogi</button>
+                <button class="kopt" onclick="jawab(this,'4',false)">B. Klasifikasi</button>
+                <button class="kopt" onclick="jawab(this,'4',true)">C. Sebab-Akibat</button>
+              </div>
+              <div class="kfeedback" id="fb4"></div>
+            </div>
+            <div class="kuis-card">
+              <div class="kuis-q">5. Paragraf yang menggambarkan objek sehingga pembaca seolah merasakannya disebut...</div>
+              <div class="kuis-opts">
+                <button class="kopt" onclick="jawab(this,'5',false)">A. Narasi</button>
+                <button class="kopt" onclick="jawab(this,'5',true)">B. Deskripsi</button>
+                <button class="kopt" onclick="jawab(this,'5',false)">C. Argumentasi</button>
+              </div>
+              <div class="kfeedback" id="fb5"></div>
+            </div>
+            <div class="kuis-card">
+              <div class="kuis-q">6. Teknik yang menyusun gagasan dari sederhana menuju paling penting disebut...</div>
+              <div class="kuis-opts">
+                <button class="kopt" onclick="jawab(this,'6',true)">A. Klimaks</button>
+                <button class="kopt" onclick="jawab(this,'6',false)">B. Antiklimaks</button>
+                <button class="kopt" onclick="jawab(this,'6',false)">C. Analogi</button>
+              </div>
+              <div class="kfeedback" id="fb6"></div>
+            </div>
+          </div>
+          <div class="skor-result" id="skorBox"><p id="skorText"></p></div>
+          <button class="btn-skor" onclick="tampilSkor()">Lihat Nilai 📊</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 8: REFLEKSI -->
+    <div class="page" id="pg8">
+      <div class="page-card">
+        <div class="page-header">
+          <div class="page-num-badge">Halaman 9 dari 9</div>
+          <h2>📋 Refleksi Pembelajaran</h2>
+          <p>Isi form sebelum dan sesudah belajar ya!</p>
+        </div>
+        <div class="page-body">
+          <div class="refl-wrap">
+            <div class="refl-card">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=https://forms.gle/Tk1CtEkbQGuvXhAy6" alt="QR Pre-Test">
+              <div class="refl-label">📝 Pre-Test</div>
+              <div class="refl-sub">Isi <strong>sebelum</strong> belajar</div>
+              <a href="https://forms.gle/Tk1CtEkbQGuvXhAy6" target="_blank" class="refl-btn">Buka Form →</a>
+            </div>
+            <div class="refl-card">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=https://forms.gle/WZ5Zm6PjbXxLBakE6" alt="QR Post-Test">
+              <div class="refl-label">📝 Post-Test</div>
+              <div class="refl-sub">Isi <strong>setelah</strong> belajar</div>
+              <a href="https://forms.gle/WZ5Zm6PjbXxLBakE6" target="_blank" class="refl-btn">Buka Form →</a>
+            </div>
+          </div>
+          <div style="margin-top:16px">
+            <div class="finish-page" style="box-shadow:none;padding:20px 0 0;">
+              <div class="finish-emoji">🎉</div>
+              <h2>Selamat! Kamu Sudah Selesai!</h2>
+              <p>Kamu sudah mempelajari semua materi paragraf. Jangan lupa isi Post-Test ya!</p>
+              <div class="finish-checks">
+                <div class="fcheck"><span>✅</span> Pengertian & unsur paragraf</div>
+                <div class="fcheck"><span>✅</span> Syarat paragraf yang baik</div>
+                <div class="fcheck"><span>✅</span> Jenis-jenis paragraf</div>
+                <div class="fcheck"><span>✅</span> Teknik pengembangan paragraf</div>
+                <div class="fcheck"><span>✅</span> Animasi & latihan soal</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end stage -->
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <button class="nav-btn" id="prevBtn" onclick="prevPage()" disabled>← Sebelumnya</button>
+    <div class="nav-center">
+      <div class="nav-section-name" id="sectionName">Halaman Judul</div>
+      <div class="nav-progress">
+        <div class="nav-progress-fill" id="progressFill" style="width:11%"></div>
+      </div>
+    </div>
+    <button class="nav-btn primary" id="nextBtn" onclick="nextPage()">Selanjutnya →</button>
+  </div>
+
+  <script>
+    const TOTAL_PAGES = 9;
+    const PAGE_NAMES = ['Halaman Judul','Pengertian','Unsur Paragraf','Syarat Paragraf','Jenis Paragraf','Teknik Pengembangan','Animasi Pembelajaran','Kuis Interaktif','Refleksi'];
+    let currentPage = 0;
+
+    // Build dots
+    const dotsWrap = document.getElementById('pageDots');
+    for(let i=0;i<TOTAL_PAGES;i++){
+      const d = document.createElement('div');
+      d.className = 'pdot' + (i===0?' active':'');
+      d.id = 'pdot'+i;
+      d.onclick = ()=>goTo(i);
+      dotsWrap.appendChild(d);
+    }
+
+    function updateUI(){
+      for(let i=0;i<TOTAL_PAGES;i++){
+        const d=document.getElementById('pdot'+i);
+        d.className='pdot'+(i===currentPage?' active':i<currentPage?' done':'');
+      }
+      document.getElementById('pageNum').textContent=(currentPage+1)+' / '+TOTAL_PAGES;
+      document.getElementById('sectionName').textContent=PAGE_NAMES[currentPage];
+      document.getElementById('progressFill').style.width=((currentPage+1)/TOTAL_PAGES*100)+'%';
+      document.getElementById('prevBtn').disabled=currentPage===0;
+      document.getElementById('nextBtn').textContent=currentPage===TOTAL_PAGES-1?'🔁 Ulangi':'Selanjutnya →';
+    }
+
+    function goTo(n){
+      if(n === currentPage) return;
+      const oldPg = document.getElementById('pg'+currentPage);
+      const newPg = document.getElementById('pg'+n);
+      const going = n > currentPage;
+
+      // hide old page immediately
+      oldPg.classList.remove('active');
+      oldPg.style.transform = '';
+      oldPg.style.opacity = '';
+
+      // prepare new page off-screen
+      newPg.style.transition = 'none';
+      newPg.style.transform = going ? 'translateX(60px)' : 'translateX(-60px)';
+      newPg.style.opacity = '0';
+      newPg.classList.add('active');
+
+      // animate in
+      requestAnimationFrame(()=>{
+        requestAnimationFrame(()=>{
+          newPg.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+          newPg.style.transform = 'translateX(0)';
+          newPg.style.opacity = '1';
+        });
+      });
+
+      currentPage = n;
+      updateUI();
+      const body = newPg.querySelector('.page-body');
+      if(body) body.scrollTop = 0;
+    }
+
+    function nextPage(){ if(currentPage===TOTAL_PAGES-1){goTo(0);}else{goTo(currentPage+1);} }
+    function prevPage(){ if(currentPage>0) goTo(currentPage-1); }
+
+    // swipe support
+    let touchStartX=0;
+    document.getElementById('stage').addEventListener('touchstart',e=>{ touchStartX=e.touches[0].clientX; });
+    document.getElementById('stage').addEventListener('touchend',e=>{
+      const diff=touchStartX-e.changedTouches[0].clientX;
+      if(Math.abs(diff)>50){ if(diff>0) nextPage(); else prevPage(); }
+    });
+
+    // TAB SWITCH
+    function switchTab(btn, id){
+      const parent=btn.closest('.page-body');
+      parent.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
+      parent.querySelectorAll('.tcontent').forEach(t=>t.classList.remove('on'));
+      btn.classList.add('on');
+      document.getElementById(id).classList.add('on');
+    }
+
+    // KUIS
+    const jawaban={};
+    function jawab(btn,no,benar){
+      const fb=document.getElementById('fb'+no);
+      const opts=btn.closest('.kuis-opts').querySelectorAll('.kopt');
+      opts.forEach(b=>{b.style.background='';b.style.borderColor='';});
+      if(benar){
+        btn.style.background='#d4edda';btn.style.borderColor='#27ae60';
+        fb.style.color='#27ae60';fb.textContent='✅ Benar!';jawaban[no]=true;
+      } else {
+        btn.style.background='#f8d7da';btn.style.borderColor='#e74c3c';
+        fb.style.color='#e74c3c';fb.textContent='❌ Kurang tepat!';jawaban[no]=false;
+      }
+    }
+    function tampilSkor(){
+      let benar=0;
+      for(let i=1;i<=6;i++){if(jawaban[i]===true)benar++;}
+      const skor=Math.round((benar/6)*100);
+      const emoji=skor===100?'🏆':skor>=80?'🌟':skor>=60?'👍':'💪';
+      document.getElementById('skorText').textContent=emoji+' Nilaimu: '+skor+'/100 ('+benar+' dari 6 soal benar)';
+      document.getElementById('skorBox').style.display='block';
+    }
+
+    // ANIMASI
+    const ATOTAL=6, ADUR=[4000,6000,6000,6000,6000,6500];
+    const ALABELS=['Pendahuluan','Deduktif','Induktif','Campuran','Cara Menemukan','Contoh Latihan'];
+    let aCur=0,aTimer=null,aPaused=false,aStartTime=0,aRemaining=0,aCurrentDur=0;
+
+    const apw=document.getElementById('anim-progressWrap');
+    for(let i=0;i<ATOTAL;i++){
+      const d=document.createElement('div');
+      d.className='anim-pdot';d.id='apdot'+i;apw.appendChild(d);
+    }
+
+    function aUpdateProgress(){
+      for(let i=0;i<ATOTAL;i++){
+        const d=document.getElementById('apdot'+i);
+        d.className='anim-pdot'+(i===aCur?' apdot-active':i<aCur?' apdot-done':'');
+      }
+      document.getElementById('anim-stageLabel').textContent=ALABELS[aCur];
+      document.getElementById('anim-prevBtn').disabled=aCur===0;
+      document.getElementById('anim-nextBtn').textContent=aCur===ATOTAL-1?'🔁':'→';
+    }
+
+    function aStartBar(dur){
+      const b=document.getElementById('anim-timerBar');
+      b.style.transition='none';b.style.width='100%';
+      setTimeout(()=>{b.style.transition=`width ${dur}ms linear`;b.style.width='0%';},50);
+    }
+    function aPauseBar(){
+      const b=document.getElementById('anim-timerBar');
+      const w=b.getBoundingClientRect().width,pw=b.parentElement.getBoundingClientRect().width;
+      b.style.transition='none';b.style.width=((w/pw)*100)+'%';
+    }
+    function aResumeBar(r){
+      const b=document.getElementById('anim-timerBar');
+      setTimeout(()=>{b.style.transition=`width ${r}ms linear`;b.style.width='0%';},50);
+    }
+    function animTogglePause(){
+      const btn=document.getElementById('anim-pauseBtn');
+      if(aCur===ATOTAL-1)return;
+      if(!aPaused){
+        aPaused=true;clearTimeout(aTimer);aPauseBar();
+        aRemaining=aCurrentDur-(Date.now()-aStartTime);
+        if(aRemaining<0)aRemaining=0;
+        btn.textContent='▶';btn.style.background='var(--green)';
+      } else {
+        aPaused=false;aResumeBar(aRemaining);
+        aStartTime=Date.now();aCurrentDur=aRemaining;
+        aTimer=setTimeout(()=>animNext(),aRemaining);
+        btn.textContent='⏸';btn.style.background='var(--orange)';
+      }
+    }
+
+    function aShow(id,ms){setTimeout(()=>{const el=document.getElementById(id);if(el)el.classList.add('ashow');},ms);}
+    function aFade(id,ms){setTimeout(()=>{const el=document.getElementById(id);if(el)el.style.opacity='1';},ms);}
+    function aHl(id,cls,ms){setTimeout(()=>{const el=document.getElementById(id);if(el)el.className='ak '+cls;},ms);}
+
+    function aShowSlide(n){
+      document.querySelectorAll('.anim-slide').forEach(s=>s.classList.remove('anim-active'));
+      document.getElementById('aslide'+n).classList.add('anim-active');
+      document.querySelectorAll('.ak').forEach(e=>e.className='ak');
+      document.querySelectorAll('.anim-legitem,.anim-drow,.anim-tips').forEach(e=>e.classList.remove('ashow'));
+      document.querySelectorAll('.anim-faderow').forEach(e=>e.style.opacity='0');
+      aPaused=false;
+      const pb=document.getElementById('anim-pauseBtn');
+      pb.textContent='⏸';pb.style.background='var(--orange)';
+      aUpdateProgress();aTrigger(n);clearTimeout(aTimer);
+      if(n<ATOTAL-1){
+        aCurrentDur=ADUR[n];aStartTime=Date.now();
+        aStartBar(ADUR[n]);aTimer=setTimeout(()=>animNext(),ADUR[n]);
+      } else {
+        document.getElementById('anim-timerBar').style.width='0%';
+      }
+    }
+
+    function animNext(){if(aCur===ATOTAL-1){aCur=0;aShowSlide(0);return;}aCur++;aShowSlide(aCur);}
+    function animPrev(){if(aCur===0)return;aCur--;aShowSlide(aCur);}
+
+    function aTrigger(n){
+      if(n===0){aShow('ail0',400);aShow('ail1',900);aShow('ail2',1400);aShow('atips0',2000);}
+      if(n===1){aHl('ad0','ahu',600);aFade('adr1',1200);aFade('adr2',1800);aHl('ad1','ahp',1400);aHl('ad2','ahp',1900);aHl('ad3','ahp',2400);aShow('aldl1',700);aShow('aldl2',1500);aShow('atips1',3200);}
+      if(n===2){aHl('ai0','ahp',500);aHl('ai1','ahp',1000);aHl('ai2','ahp',1500);aFade('air1',1200);aFade('air2',2500);aHl('ai3','ahs',2800);aShow('alil1',600);aShow('alil2',2800);aShow('atips2',3600);}
+      if(n===3){aHl('ac0','ahu',500);aFade('acr1',1000);aHl('ac1','ahp',1200);aHl('ac2','ahp',1700);aFade('acr2',2600);aHl('ac3','ahs',2800);aShow('atips3',3800);}
+      if(n===4){aShow('a5r0',300);aShow('a5r1',1000);aShow('a5r2',1900);aShow('a5r3',2800);aShow('atips5',3800);}
+      if(n===5){aHl('alat0','ahu',800);aHl('alat1','ahp',1600);aHl('alat2','ahp',2400);aHl('alat3','ahp',3200);aShow('alll1',900);aShow('alll2',1800);aShow('atips6',4000);}
+    }
+
+    aShowSlide(0);
+    updateUI();
+  </script>
+
+</body>
+</html>
